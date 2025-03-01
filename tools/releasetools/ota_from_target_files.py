@@ -1058,12 +1058,15 @@ def GenerateAbOtaPackage(target_file, output_file, source_file=None):
     target_file = GetTargetFilesZipForPartialUpdates(target_file,
                                                      OPTIONS.partial)
   if vabc_compression_param != target_info.vabc_compression_param:
-    target_file = GetTargetFilesZipForCustomVABCCompression(
-        target_file, vabc_compression_param)
+    if target_info.get('use_dynamic_partitions') == "true":
+      target_file = GetTargetFilesZipForCustomVABCCompression(
+          target_file, vabc_compression_param)
   if OPTIONS.vabc_cow_version:
-    target_file = ModifyTargetFilesDynamicPartitionInfo(target_file, "virtual_ab_cow_version", OPTIONS.vabc_cow_version)
+    if target_info.get('use_dynamic_partitions') == "true":
+      target_file = ModifyTargetFilesDynamicPartitionInfo(target_file, "virtual_ab_cow_version", OPTIONS.vabc_cow_version)
   if OPTIONS.compression_factor:
-    target_file = ModifyTargetFilesDynamicPartitionInfo(target_file, "virtual_ab_compression_factor", OPTIONS.compression_factor)
+    if target_info.get('use_dynamic_partitions') == "true":
+      target_file = ModifyTargetFilesDynamicPartitionInfo(target_file, "virtual_ab_compression_factor", OPTIONS.compression_factor)
   if OPTIONS.skip_postinstall:
     target_file = GetTargetFilesZipWithoutPostinstallConfig(target_file)
   # Target_file may have been modified, reparse ab_partitions
